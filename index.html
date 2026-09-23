@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <div class="main">
       <div class="main-scroll" id="main-scroll"></div>
       <div class="main-footer">
-        <span class="sst" id="sst">Rascunho salvo automaticamente</span>
+        <span style="font-size:12px;color:#F6C343;display:flex;align-items:center;gap:6px">⚠️ As respostas só são salvas ao clicar em <strong>Finalizar desafio</strong>. Não feche ou atualize a página.</span>
         <div class="nr-r" id="nav-btns"></div>
       </div>
     </div>
@@ -191,14 +191,16 @@ const SHEET_URL='https://script.google.com/a/macros/bling.com.br/s/AKfycbxsgyT22
 const STORAGE_KEY='bling_desafio_v1';
 const SC=[
   {tag:'Cenário 01',title:'Triagem de Ouvidoria',
-   ctx:'O time de qualidade te encaminha uma Ouvidoria de um cliente Elite com as seguintes informações:',
-   quote:'"Cliente relata que está com erro ao emitir nota fiscal desde sexta-feira. Já tentou refazer o processo algumas vezes e o erro persiste. Segue print da tela de erro anexo."',
-   ctx2:'O print mostra uma mensagem genérica de erro do sistema, sem código específico. O time de qualidade não conseguiu identificar a causa e encaminhou para você por não ter conhecimento técnico.',
-   qs:['Com as informações que chegaram, o que você consegue identificar de imediato? O que ainda está faltando?',
-       'Quais são os primeiros passos que você toma — o que você busca no sistema e por quê?',
+   ctx:'O time de qualidade te encaminha duas ouvidorias ao mesmo tempo:',
+   list:[
+     '📋 Caso A — Cliente Elite: O ticket referencia outro ticket já escalado para o time de Desenvolvimento há 10 dias sem responsável definido. O cliente está sem emitir notas fiscais, impactando diretamente o despacho das suas mercadorias.',
+     '📋 Caso B — Cliente Diamante: O cliente está com problemas na importação de pedidos das lojas virtuais. Ocorre um erro genérico que o time de qualidade não conseguiu identificar. O problema já acontece há 1 semana e o cliente ameaça abrir uma ação judicial.'
+   ],
+   qs:['Como você define a prioridade entre os dois casos? Justifique seu raciocínio.',
+       'Quais são os primeiros passos que você toma em cada caso — o que você busca no sistema e por quê?',
        'Durante a investigação, como você mantém o time de qualidade informado sobre o andamento?',
-       'Você identifica que é um bug real que precisa do especialista de Fiscal. O que você entrega para ele e em que formato?',
-       'Como você define a prioridade considerando que o cliente é Elite e está sem emitir NF há 3 dias?']},
+       'Como você lida com cada caso até a resolução? Descreva seu processo.',
+       'Durante o atendimento, o cliente Diamante menciona que, caso o problema não seja resolvido em breve, irá acionar o jurídico da empresa. Como você age a partir desse momento? Quem você envolve, o que você comunica e quais são seus próximos passos?']},
   {tag:'Cenário 02',title:'Gestão de Incidente',
    ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 47 tickets foram abertos. O time de Desenvolvimento está investigando sem previsão de resolução.\n\nNo Bling, quando há um incidente, é criado um aviso visível para a equipe de atendimento e para os clientes. Ao final, uma mensagem de encerramento é enviada para todos os clientes impactados.',
    qs:['Quais são suas prioridades nos primeiros 10 minutos?',
@@ -257,13 +259,7 @@ function tick(){
 
 function saveCur(){SC[cur].qs.forEach((_,qi)=>{const el=document.getElementById(`a${cur}-${qi}`);if(el)ans[cur][qi]=el.value})}
 
-let saveT=null;
-function autoSave(){
-  clearTimeout(saveT);
-  const el=document.getElementById('hdr-sst');
-  if(el){el.textContent='Salvando…';el.className='sst'}
-  saveT=setTimeout(()=>{saveCur();const el=document.getElementById('hdr-sst');if(el){el.textContent='Salvo ✓';el.className='sst ok'}},700);
-}
+
 
 function updateCk(i){document.getElementById(`ck-${i}`).textContent=ans[i].some(v=>v.trim())?'✓ Respondido':''}
 
@@ -284,7 +280,7 @@ function render(i){
     <div class="qs">`;
   s.qs.forEach((q,qi)=>{
     h+=`<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${q}</span></p>
-    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…" oninput="autoSave()">${ans[i][qi]||''}</textarea></div>`;
+    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…">${ans[i][qi]||''}</textarea></div>`;
   });
   h+=`</div>`;
   document.getElementById('main-scroll').innerHTML=h;
@@ -319,7 +315,6 @@ function finish(timeout=false,isRetry=false){
   });
   document.getElementById('sum').innerHTML=h;
   document.getElementById('timer-wrap').style.display='none';
-  document.getElementById('hdr-sst').style.display='none';
   show('s-finish');
   if(SHEET_URL&&SHEET_URL!=='https://script.google.com/a/macros/bling.com.br/s/AKfycbxsgyT22bd6abTAvTruYJSJATzgq1blZy9P9mQaP_klXzt-6eEwZWtffGm27tRbFvN9CA/exec'){
     const payload={name:uName,email:uEmail,time:tStr,timeout,retry:isRetry};
