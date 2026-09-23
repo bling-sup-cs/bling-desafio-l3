@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <div class="main">
       <div class="main-scroll" id="main-scroll"></div>
       <div class="main-footer">
-        <span style="font-size:12px;color:#F6C343;display:flex;align-items:center;gap:6px">⚠️ As respostas só são salvas ao clicar em <strong>Finalizar desafio</strong>. Não feche ou atualize a página.</span>
+        <span style="font-size:12px;color:#F6C343;display:flex;align-items:center;gap:6px">⚠️ Não feche esta aba. Atualizar a página mantém o progresso, mas fechar o navegador apaga as respostas.</span>
         <div class="nr-r" id="nav-btns"></div>
       </div>
     </div>
@@ -188,6 +188,56 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
 
 <script>
 const SHEET_URL='https://script.google.com/a/macros/bling.com.br/s/AKfycbxsgyT22bd6abTAvTruYJSJATzgq1blZy9P9mQaP_klXzt-6eEwZWtffGm27tRbFvN9CA/exec';
+const STORAGE_SESSION='bling_session_v1';
+
+// ── SESSÃO ────────────────────────────────────────────────────
+function saveSession(){
+  try{
+    localStorage.setItem(STORAGE_SESSION, JSON.stringify({
+      name:uName, email:uEmail,
+      startedAt: startedAt,
+      answers: ans,
+      cur: cur
+    }));
+  }catch(e){}
+}
+
+function loadSession(){
+  try{
+    const raw = localStorage.getItem(STORAGE_SESSION);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+
+function clearSession(){
+  try{ localStorage.removeItem(STORAGE_SESSION); }catch(e){}
+}
+
+// Ao carregar a página, verifica se havia sessão em andamento
+window.addEventListener('load', () => {
+  const session = loadSession();
+  if(!session || !session.name || !session.email || !session.startedAt) return;
+  const elapsed = Math.floor((Date.now() - session.startedAt) / 1000);
+  const remaining = 7200 - elapsed;
+  if(remaining <= 0){
+    // Tempo esgotado — limpa sessão
+    clearSession();
+    return;
+  }
+  // Restaura sessão
+  uName = session.name;
+  uEmail = session.email;
+  startedAt = session.startedAt;
+  ans = session.answers || SC.map(s=>s.qs.map(()=>''));
+  secs = remaining;
+  cur = session.cur || 0;
+  document.getElementById('timer-wrap').style.display='flex';
+  show('s-challenge');
+  render(cur);
+  document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===cur));
+  tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick();saveSession()},1000);
+});
 const STORAGE_KEY='bling_desafio_v1';
 const SC=[
   {tag:'Cenário 01',title:'Triagem de Ouvidoria',
@@ -202,11 +252,11 @@ const SC=[
        'Como você lida com cada caso até a resolução? Descreva seu processo.',
        'Durante o atendimento, o cliente Diamante menciona que, caso o problema não seja resolvido em breve, irá acionar o jurídico da empresa. Como você age a partir desse momento? Quem você envolve, o que você comunica e quais são seus próximos passos?']},
   {tag:'Cenário 02',title:'Gestão de Incidente',
-   ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 47 tickets foram abertos. O time de Desenvolvimento está investigando sem previsão de resolução.\n\nNo Bling, quando há um incidente, é criado um aviso visível para a equipe de atendimento e para os clientes. Ao final, uma mensagem de encerramento é enviada para todos os clientes impactados.',
-   qs:['Quais são suas prioridades nos primeiros 10 minutos?',
-       'Escreva o texto do aviso de incidente que você criaria no sistema — visto por equipe e clientes ao mesmo tempo.',
-       'Como você acompanha o incidente enquanto o time investiga? O que monitora?',
-       'O problema é resolvido 2 horas depois. Escreva a mensagem de encerramento para os clientes.']},
+   ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 87 tickets foram abertos por clientes diferentes relatando o mesmo problema. Reclamações no Reclame Aqui começam a surgir. O time de Infra já foi avisado, mas ainda não respondeu.\n\nNo Bling, quando há um incidente, é criado um aviso visível para a equipe de atendimento e para os clientes na plataforma. Ao final, uma mensagem de encerramento é enviada para todos os clientes impactados.',
+   qs:['Quais são suas prioridades nos primeiros 10 minutos? Como você age enquanto o time de Infra não responde?',
+       'Escreva o texto do aviso de incidente que você criaria no sistema — será visto pela equipe de atendimento e pelos clientes ao mesmo tempo.',
+       'Como você acompanha e atualiza o incidente enquanto aguarda o time de Infra? O que você monitora durante esse período?',
+       'O problema é resolvido 2 horas depois. Escreva a mensagem de encerramento que será enviada para todos os clientes impactados.']},
   {tag:'Cenário 03',title:'Priorização sob pressão',
    ctx:'É uma terça-feira de manhã e chegaram ao mesmo tempo:',
    list:['A) Ouvidoria de cliente Diamante aberta há 5 dias sem resposta, sobre NF com erro',
@@ -225,7 +275,7 @@ const SC=[
        'Como você mede se a solução funcionou?']}
 ];
 
-let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),secs=7200,tmrId=null,uName='',uEmail='',done=false,retryOk=false;
+let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),secs=7200,tmrId=null,uName='',uEmail='',done=false,retryOk=false,startedAt=null;
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 
@@ -264,7 +314,7 @@ function saveCur(){SC[cur].qs.forEach((_,qi)=>{const el=document.getElementById(
 function updateCk(i){document.getElementById(`ck-${i}`).textContent=ans[i].some(v=>v.trim())?'✓ Respondido':''}
 
 function goTo(i){
-  saveCur();updateCk(cur);cur=i;
+  saveCur();updateCk(cur);cur=i;saveSession();
   document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
   render(i);document.getElementById('main-scroll').scrollTo(0,0);
 }
@@ -280,7 +330,7 @@ function render(i){
     <div class="qs">`;
   s.qs.forEach((q,qi)=>{
     h+=`<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${q}</span></p>
-    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…">${ans[i][qi]||''}</textarea></div>`;
+    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…" oninput="saveCur();saveSession()">${ans[i][qi]||''}</textarea></div>`;
   });
   h+=`</div>`;
   document.getElementById('main-scroll').innerHTML=h;
@@ -302,7 +352,7 @@ function confirmRetry(){retryOk=true;document.getElementById('modal-retry').styl
 function finish(timeout=false,isRetry=false){
   if(done)return;done=true;
   saveCur();SC.forEach((_,i)=>updateCk(i));
-  clearInterval(tmrId);saveEmail(uEmail);
+  clearInterval(tmrId);saveEmail(uEmail);clearSession();
   const used=7200-secs,hu=Math.floor(used/3600),mu=Math.floor((used%3600)/60);
   const tStr=hu>0?`${hu}h ${mu}min`:`${mu} min`;
   let h=`<div class="sr"><span>Candidato</span><span>${uName}</span></div>
