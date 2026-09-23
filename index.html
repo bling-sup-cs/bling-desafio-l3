@@ -117,7 +117,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <p class="w-desc">Quatro cenários do dia a dia da vaga. Não existe resposta certa ou errada — queremos entender como você raciocina, prioriza e se comunica.</p>
     <div class="info-grid">
       <div class="info-item"><div class="il">Tempo</div><div class="iv">2 horas</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Tempo total, cronometrado a partir do início.</div></div>
-      <div class="info-item"><div class="il">Cenários</div><div class="iv">4 cenários</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Situações reais do dia a dia do Bling.</div></div>
+      <div class="info-item"><div class="il">Cenários</div><div class="iv">5 cenários</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Situações reais do dia a dia do Bling.</div></div>
       <div class="info-item"><div class="il">Sem pausa</div><div class="iv">Contínuo</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">O cronômetro não para depois de iniciado.</div></div>
       <div class="info-item"><div class="il">Respostas</div><div class="iv">Ao enviar</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Só são salvas após o envio final.</div></div>
     </div>
@@ -150,7 +150,8 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
       <button class="sbtn active" id="nb-0" onclick="goTo(0)"><div class="sn">Cenário 01</div><div class="st">Triagem de Ouvidoria</div><div class="sc" id="ck-0"></div></button>
       <button class="sbtn" id="nb-1" onclick="goTo(1)"><div class="sn">Cenário 02</div><div class="st">Gestão de Incidente</div><div class="sc" id="ck-1"></div></button>
       <button class="sbtn" id="nb-2" onclick="goTo(2)"><div class="sn">Cenário 03</div><div class="st">Priorização sob pressão</div><div class="sc" id="ck-2"></div></button>
-      <button class="sbtn" id="nb-3" onclick="goTo(3)"><div class="sn">Cenário 04</div><div class="st">Processo e documentação</div><div class="sc" id="ck-3"></div></button>
+      <button class="sbtn" id="nb-3" onclick="goTo(3)"><div class="sn">Cenário 04</div><div class="st">Processos e melhoria contínua</div><div class="sc" id="ck-3"></div></button>
+      <button class="sbtn" id="nb-4" onclick="goTo(4)"><div class="sn">Cenário 05</div><div class="st">Gestão de backlog com DEV</div><div class="sc" id="ck-4"></div></button>
     </aside>
     <div class="main">
       <div class="main-scroll" id="main-scroll"></div>
@@ -252,27 +253,33 @@ const SC=[
        'Como você lida com cada caso até a resolução? Descreva seu processo.',
        'Durante o atendimento, o cliente Diamante menciona que, caso o problema não seja resolvido em breve, irá acionar o jurídico da empresa. Como você age a partir desse momento? Quem você envolve, o que você comunica e quais são seus próximos passos?']},
   {tag:'Cenário 02',title:'Gestão de Incidente',
-   ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 87 tickets foram abertos por clientes diferentes relatando o mesmo problema. Reclamações no Reclame Aqui começam a surgir. O time de Infra já foi avisado, mas ainda não respondeu.\n\nNo Bling, quando há um incidente, é criado um aviso visível para a equipe de atendimento e para os clientes na plataforma. Ao final, uma mensagem de encerramento é enviada para todos os clientes impactados.',
+   ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 87 tickets foram abertos por clientes diferentes relatando o mesmo problema. Reclamações no Reclame Aqui começam a surgir. O time de Infra já foi avisado, mas ainda não respondeu.',
    qs:['Quais são suas prioridades nos primeiros 10 minutos? Como você age enquanto o time de Infra não responde?',
        'Escreva o texto do aviso de incidente que você criaria no sistema — será visto pela equipe de atendimento e pelos clientes ao mesmo tempo.',
        'Como você acompanha e atualiza o incidente enquanto aguarda o time de Infra? O que você monitora durante esse período?',
        'O problema é resolvido 2 horas depois. Escreva a mensagem de encerramento que será enviada para todos os clientes impactados.']},
   {tag:'Cenário 03',title:'Priorização sob pressão',
-   ctx:'É uma terça-feira de manhã e chegaram ao mesmo tempo:',
-   list:['A) Ouvidoria de cliente Diamante aberta há 5 dias sem resposta, sobre NF com erro',
-         'B) Cliente Elite sem emitir NF desde ontem',
-         'C) 12 tickets de clientes Add-on com mesmo erro de integração — todos hoje',
-         'D) Time de L2 pedindo orientação sobre chamados com muitas devoluções',
-         'E) CSM pedindo status de bug em conta estratégica'],
-   qs:['Em que ordem você trata cada demanda? Justifique.',
-       'Alguma você delegaria ou redirecionaria? Para quem e por quê?',
-       'Como você comunica para quem está esperando?']},
-  {tag:'Cenário 04',title:'Processo e documentação',
-   ctx:'Nos últimos 2 meses o time de L2 escalou mais de 40 chamados sobre o mesmo tema — erro de configuração de uma integração — sendo que a maioria poderia ter sido resolvida no L2 com o procedimento correto.',
-   qs:['Como você confirma que é falta de processo e não falta de capacidade técnica?',
+   ctx:'É uma terça-feira de manhã e você recebeu as demandas abaixo ao mesmo tempo:',
+   list:['A) Ouvidoria de um cliente Diamante aberta há 5 dias sem resposta, sobre uma nota fiscal emitida com erro — está com o time de Desenvolvimento.',
+         'B) Time de CSM te chama para informar que um cliente Elite está sem conseguir gerar etiqueta de envio dos pedidos.',
+         'C) 12 tickets de clientes com mesmo erro de integração — todos abertos hoje.',
+         'D) Time de L2 pedindo orientação sobre incidentes que estão em aberto.',
+         'E) Gestão solicita levantamento dos principais problemas que ocorreram na semana passada para apresentação para a diretoria.'],
+   qs:['Em que ordem você trata cada uma dessas demandas? Justifique seu raciocínio.',
+       'Alguma delas você delegaria ou redirecionaria? Para quem e por quê?',
+       'Como você se comunica com quem está esperando enquanto você trata as prioridades?']},
+  {tag:'Cenário 04',title:'Processos e melhoria contínua',
+   ctx:'Nos últimos 2 meses o time de L2 escalou mais de 40 chamados sobre o mesmo tema — erro de configuração de uma integração — sendo que a maioria poderia ter sido resolvida no próprio L2.',
+   qs:['Como você avalia o caso para entender se é uma falta de processo, documentação ou capacidade técnica?',
        'O que você faz para resolver isso de forma definitiva?',
-       'Escreva o início de um procedimento ou artigo de base de conhecimento para esse cenário.',
-       'Como você mede se a solução funcionou?']}
+       'Como você mede se a solução funcionou?',
+       'Como você comunica essa situação para a liderança?']},
+  {tag:'Cenário 05',title:'Gestão de backlog e priorização com DEV',
+   ctx:'O time de ERP está com 80 tickets na fila de desenvolvimento, com alguns casos parados há até 8 meses sem atualização. Você não tem visibilidade clara sobre o status de cada um — quais estão em andamento, quais estão parados e por quê.',
+   qs:['Como você faz para mapear a situação atual da fila e entender o que está realmente parado?',
+       'Com base nesse levantamento, como você define a prioridade entre os casos novos e os casos parados?',
+       'Como você se comunica com o time de DEV para cobrar andamento sem prejudicar o relacionamento?',
+       'Como você mantém os clientes e o time de suporte informados sobre casos que estão há meses sem resolução?']}
 ];
 
 let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),secs=7200,tmrId=null,uName='',uEmail='',done=false,retryOk=false,startedAt=null;
@@ -321,7 +328,7 @@ function goTo(i){
 
 function render(i){
   const s=SC[i];
-  let h=`<p class="sc-tag">${s.tag} de 4</p><h2 class="sc-title">${s.title}</h2>
+  let h=`<p class="sc-tag">${s.tag} de ${SC.length}</p><h2 class="sc-title">${s.title}</h2>
     <div class="ctx"><p class="ctx-lbl">Situação</p>
     <p class="ctx-txt">${(s.ctx||'').replace(/\n/g,'<br>')}</p>
     ${s.quote?`<p class="ctx-q">${s.quote}</p>`:''}
@@ -336,7 +343,7 @@ function render(i){
   document.getElementById('main-scroll').innerHTML=h;
   document.getElementById('nav-btns').innerHTML=
     (i>0?`<button class="btn-s" onclick="goTo(${i-1})">← Anterior</button>`:'')+
-    (i<3?`<button class="btn-p" onclick="goTo(${i+1})" style="padding:12px 28px">Próximo →</button>`
+    (i<4?`<button class="btn-p" onclick="goTo(${i+1})" style="padding:12px 28px">Próximo →</button>`
         :`<button class="btn-p" onclick="tryFinish()" style="padding:12px 28px">Finalizar desafio</button>`);
 }
 
