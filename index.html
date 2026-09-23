@@ -196,7 +196,7 @@ function saveSession(){
   try{
     localStorage.setItem(STORAGE_SESSION, JSON.stringify({
       name:uName, email:uEmail,
-      startedAt: startedAt,
+      startedAt: Number(startedAt),
       answers: ans,
       cur: cur
     }));
@@ -219,7 +219,7 @@ function clearSession(){
 window.addEventListener('load', () => {
   const session = loadSession();
   if(!session || !session.name || !session.email || !session.startedAt) return;
-  const elapsed = Math.floor((Date.now() - session.startedAt) / 1000);
+  const elapsed = Math.floor((Date.now() - Number(session.startedAt)) / 1000);
   const remaining = 7200 - elapsed;
   if(remaining <= 0){
     // Tempo esgotado — limpa sessão
@@ -237,6 +237,7 @@ window.addEventListener('load', () => {
   show('s-challenge');
   render(cur);
   document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===cur));
+  tick(); // atualiza display imediatamente
   tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick();saveSession()},1000);
 });
 const STORAGE_KEY='bling_desafio_v1';
@@ -316,6 +317,19 @@ function tick(){
 
 function saveCur(){SC[cur].qs.forEach((_,qi)=>{const el=document.getElementById(`a${cur}-${qi}`);if(el)ans[cur][qi]=el.value})}
 
+let liveT=null;
+function saveAnswerLive(el, e){
+  // Find which question this textarea belongs to
+  const id = el.id; // format: a{scenario}-{question}
+  const parts = id.replace('a','').split('-');
+  const si = parseInt(parts[0]);
+  const qi = parseInt(parts[1]);
+  ans[si][qi] = el.value;
+  // Debounce localStorage save
+  clearTimeout(liveT);
+  liveT = setTimeout(()=>{ saveSession(); }, 500);
+}
+
 
 
 function updateCk(i){document.getElementById(`ck-${i}`).textContent=ans[i].some(v=>v.trim())?'✓ Respondido':''}
@@ -337,7 +351,7 @@ function render(i){
     <div class="qs">`;
   s.qs.forEach((q,qi)=>{
     h+=`<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${q}</span></p>
-    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…" oninput="saveCur();saveSession()">${ans[i][qi]||''}</textarea></div>`;
+    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…" oninput="saveAnswerLive(this, arguments[0])">${ans[i][qi]||''}</textarea></div>`;
   });
   h+=`</div>`;
   document.getElementById('main-scroll').innerHTML=h;
