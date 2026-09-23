@@ -1,0 +1,24 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --dark:   #002726;
+  --green:  #93F574;
+  --purple: #7F76FF;
+  --t1:     #40615E;
+  --t2:     #678A88;
+  --mist:   #B9C9C9;
+  --mist2:  #E3EBEB;
+  --white:  #FFFFFF;
+  --card:   #03302F;
+  --border: rgba(147,245,116,0.15);
+  --border2:rgba(147,245,116,0.3);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: var(--dark);
+  color: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
