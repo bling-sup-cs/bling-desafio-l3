@@ -397,7 +397,7 @@ function finish(timeout=false,isRetry=false){
   document.getElementById('sum').innerHTML=h;
   document.getElementById('timer-wrap').style.display='none';
   show('s-finish');
-  if(SHEET_URL&&SHEET_URL!=='https://n8n.product.dev.bling.com.br/webhook-test/738b2266-962a-464a-ae93-c97d7dc77994'){
+  if(SHEET_URL&&SHEET_URL!=='SHEET_URL_PLACEHOLDER'){
     const payload={name:uName,email:uEmail,time:tStr,timeout,retry:isRetry};
     SC.forEach((s,i)=>s.qs.forEach((_,qi)=>{payload[`C${i+1}_Q${qi+1}`]=ans[i][qi]||''}));
     console.log('Enviando para:', SHEET_URL);
