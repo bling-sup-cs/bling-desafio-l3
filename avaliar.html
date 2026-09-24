@@ -120,61 +120,111 @@ const CRITERIA={
     title:'Cenário 01 — Triagem de Ouvidoria',
     qs:[
       {q:'Como você define a prioridade entre os dois casos? Justifique seu raciocínio.',
-       c:'Reconhece que os dois casos têm urgências distintas. Caso A: impacto operacional crítico (sem NF = sem despacho) + 10 dias parado em DEV sem responsável. Caso B: risco jurídico imediato (ameaça de ação judicial) que exige escalonamento para liderança/jurídico. Nota 5: age em paralelo nos dois com justificativa clara.'},
+       c:'Reconhece que os dois casos têm urgências distintas. Caso A: impacto operacional crítico (sem NF = sem despacho) + 10 dias parado em DEV sem responsável. Caso B: risco jurídico imediato (ameaça de ação judicial) que exige escalonamento para liderança/jurídico. Nota 5: age em paralelo nos dois com justificativa clara.',
+       notas:{
+         5:'Reconhece que os dois casos têm urgências distintas e complementares. Age em paralelo nos dois com justificativa clara considerando plano, impacto operacional e risco jurídico.',
+         4:'Identifica corretamente a urgência dos dois casos mas prioriza apenas um, com justificativa parcial.',
+         3:'Prioriza um dos casos com justificativa razoável mas não considera todos os fatores relevantes (plano, impacto, risco jurídico).',
+         2:'Prioriza apenas pelo plano (Elite > Diamante) sem considerar o risco jurídico do Caso B ou o impacto operacional do Caso A.',
+         1:'Não demonstra raciocínio de priorização, resposta superficial ou genérica.'
+       }},
       {q:'Quais são os primeiros passos que você toma em cada caso — o que você busca no sistema e por quê?',
-       c:'Caso A: verifica o ticket no DEV, identifica quem deveria ser responsável, levanta histórico e impacto, aciona responsável ou liderança de DEV. Caso B: busca logs do erro genérico, tenta reproduzir, verifica outros clientes afetados. Em paralelo escala risco jurídico para liderança/jurídico (Diamante não tem CSM).'},
+       c:'Caso A: verifica o ticket no DEV, identifica quem deveria ser responsável, levanta histórico e impacto, aciona responsável ou liderança de DEV. Caso B: busca logs do erro genérico, tenta reproduzir, verifica outros clientes afetados. Em paralelo escala risco jurídico para liderança/jurídico (Diamante não tem CSM).',
+       notas:{
+         5:'Descreve passos concretos para os dois casos: o que busca no sistema, por quê e em que ordem. Escala o risco jurídico do Caso B em paralelo à investigação técnica.',
+         4:'Descreve passos corretos para um dos casos com clareza e para o outro de forma genérica.',
+         3:'Descreve passos razoáveis mas sem especificar o que busca no sistema ou por quê.',
+         2:'Escala imediatamente sem investigar nada, ou investiga sem considerar o risco jurídico do Caso B.',
+         1:'Resposta vaga, sem processo claro.'
+       }},
       {q:'Durante a investigação, como você mantém o time de qualidade informado sobre o andamento?',
-       c:'Comunica com linguagem clara (sem jargão técnico), define prazo de retorno mesmo sem ter a solução, diferencia os dois tipos de urgência para orientar o time corretamente.'},
+       c:'Comunica com linguagem clara (sem jargão técnico), define prazo de retorno mesmo sem ter a solução, diferencia os dois tipos de urgência para orientar o time corretamente.',
+       notas:{
+         5:'Comunicação clara, sem jargão, com prazo de retorno definido mesmo sem ter a solução. Diferencia os dois tipos de urgência para orientar o time.',
+         4:'Comunica bem mas sem definir prazo de retorno ou sem diferenciar os dois tipos de urgência.',
+         3:'Comunica que está investigando mas de forma genérica, sem próximos passos claros.',
+         2:'Comunicação confusa, com jargão técnico, ou só comunica quando tem a resposta.',
+         1:'Não menciona comunicação com o time de qualidade.'
+       }},
       {q:'Como você lida com cada caso até a resolução? Descreva seu processo.',
-       c:'Caso A: cobra responsável no DEV, define prazo, acompanha e atualiza via time de qualidade. Caso B: escala risco jurídico para liderança/jurídico, investiga o erro técnico em paralelo, documenta tudo. Não fecha sem confirmação de resolução.'},
+       c:'Caso A: cobra responsável no DEV, define prazo, acompanha e atualiza via time de qualidade. Caso B: escala risco jurídico para liderança/jurídico, investiga o erro técnico em paralelo, documenta tudo. Não fecha sem confirmação de resolução.',
+       notas:{
+         5:'Descreve processo completo para os dois casos: acompanhamento ativo, escalonamento correto e não fecha sem confirmação de resolução.',
+         4:'Descreve processo completo para um caso e parcial para o outro.',
+         3:'Descreve processo razoável mas sem mencionar acompanhamento até resolução ou confirmação com o cliente.',
+         2:'Escala e não acompanha — não monitora até a resolução.',
+         1:'Processo indefinido ou muito superficial.'
+       }},
       {q:'Durante o atendimento, o cliente Diamante menciona que irá acionar o jurídico. Como você age? Quem você envolve, o que comunica e quais são seus próximos passos?',
-       c:'Escala imediatamente para liderança e/ou jurídico (Diamante não tem CSM). Não faz promessas ao cliente. Acelera investigação técnica em paralelo. Documenta tudo. Entende que sai do escopo técnico e vira risco de negócio. Sinal de alerta: prometer prazo ou tratar como caso técnico comum.'}
+       c:'Escala imediatamente para liderança e/ou jurídico (Diamante não tem CSM). Não faz promessas ao cliente. Acelera investigação técnica em paralelo. Documenta tudo. Entende que sai do escopo técnico e vira risco de negócio. Sinal de alerta: prometer prazo ou tratar como caso técnico comum.',
+       notas:{
+         5:'Escala imediatamente para liderança e/ou jurídico, sem fazer promessas ao cliente. Acelera investigação em paralelo e documenta tudo. Entende que é um risco de negócio.',
+         4:'Escala corretamente mas faz alguma promessa ao cliente ou não documenta adequadamente.',
+         3:'Escala para liderança mas não menciona jurídico ou não acelera a investigação técnica.',
+         2:'Tenta resolver sozinho sem escalar o risco jurídico.',
+         1:'Ignora a ameaça ou não sabe o que fazer.'
+       }}
     ]},
   c2:{
     title:'Cenário 02 — Gestão de Incidente',
     qs:[
       {q:'Quais são suas prioridades nos primeiros 10 minutos? Como você age enquanto o time de Infra não responde?',
-       c:'Cria o incidente imediatamente (não espera o Infra). Centraliza os tickets. Escala o Infra por outro canal (telefone, Slack direto, liderança). Alerta o time de atendimento. Age sem paralisar. Sinal de alerta: não mencionar escalada por outro canal quando não há resposta.'},
+       c:'Cria o incidente imediatamente (não espera o Infra). Centraliza os tickets. Escala o Infra por outro canal (telefone, Slack direto, liderança). Alerta o time de atendimento. Age sem paralisar. Sinal de alerta: não mencionar escalada por outro canal quando não há resposta.',
+       notas:{5:'Cria o incidente imediatamente, centraliza tickets, escala o Infra por outro canal e alerta o time de atendimento. Age sem paralisar.',4:'Cria o incidente e escala o Infra mas espera resposta antes de agir em outras frentes.',3:'Toma algumas ações corretas mas fica aguardando o Infra ao invés de escalar por outros meios.',2:'Espera o Infra responder antes de criar o incidente ou tomar qualquer ação.',1:'Sem plano claro para os primeiros 10 minutos.'}},
       {q:'Escreva o texto do aviso de incidente que você criaria no sistema — será visto pela equipe e pelos clientes ao mesmo tempo.',
-       c:'Texto claro, sem jargão técnico, reconhece o problema, informa que está sendo investigado, não promete prazo. Tom calmo e transparente. Exemplo: "Estamos cientes de uma instabilidade que está afetando alguns clientes. Nossa equipe já investiga e atualizaremos em breve."'},
+       c:'Texto claro, sem jargão técnico, reconhece o problema, informa que está sendo investigado, não promete prazo. Tom calmo e transparente. Exemplo: "Estamos cientes de uma instabilidade que está afetando alguns clientes. Nossa equipe já investiga e atualizaremos em breve."',
+       notas:{5:'Texto claro, sem jargão, reconhece o problema, informa investigação em andamento, não promete prazo. Tom calmo e transparente para dois públicos.',4:'Texto claro mas com jargão técnico ou tom que pode gerar ansiedade nos clientes.',3:'Texto compreensível mas vago ou promete prazo sem ter.',2:'Texto confuso, muito técnico ou que minimiza o impacto.',1:'Texto inadequado para comunicação pública.'}},
       {q:'Como você acompanha e atualiza o incidente enquanto aguarda o time de Infra? O que você monitora durante esse período?',
-       c:'Monitora volume de tickets, mantém contato ativo com o Infra, atualiza o aviso periodicamente mesmo sem novidades, centraliza informações para o time de atendimento. Postura ativa, não passiva.'},
+       c:'Monitora volume de tickets, mantém contato ativo com o Infra, atualiza o aviso periodicamente mesmo sem novidades, centraliza informações para o time de atendimento. Postura ativa, não passiva.',
+       notas:{5:'Monitora volume de tickets, contato ativo com Infra, atualiza o aviso periodicamente mesmo sem novidades e centraliza informações para o time.',4:'Monitora e atualiza mas de forma reativa — só comunica quando tem novidade.',3:'Acompanha mas não atualiza o aviso ou não mantém o time informado.',2:'Postura passiva — espera o Infra resolver e comunicar.',1:'Não descreve acompanhamento ativo.'}},
       {q:'O problema é resolvido 2 horas depois. Escreva a mensagem de encerramento para os clientes.',
-       c:'Confirma a resolução, explica brevemente o que foi corrigido em linguagem acessível, agradece a paciência, orienta quem ainda tiver problemas a abrir chamado. Tom próximo e transparente.'}
+       c:'Confirma a resolução, explica brevemente o que foi corrigido em linguagem acessível, agradece a paciência, orienta quem ainda tiver problemas a abrir chamado. Tom próximo e transparente.',
+       notas:{5:'Confirma resolução, explica brevemente o que foi corrigido, agradece a paciência e orienta quem ainda tiver problemas. Tom próximo e transparente.',4:'Mensagem completa mas sem orientação para quem ainda tiver problemas.',3:'Confirma a resolução mas de forma muito genérica, sem orientação ou contexto.',2:'Mensagem muito curta ou que não comunica o encerramento claramente.',1:'Mensagem inadequada ou confusa.'}}
     ]},
   c3:{
     title:'Cenário 03 — Priorização sob pressão',
     qs:[
       {q:'Em que ordem você trata cada uma dessas demandas? Justifique seu raciocínio.',
-       c:'Ordem ideal: C (12 tickets = potencial incidente) → B (Elite sem etiqueta via CSM) → A (Ouvidoria Diamante 5 dias em DEV) → D (L2 orientação) → E (levantamento diretoria). Sinal de alerta: priorizar E (diretoria) acima das urgências operacionais, ou não reconhecer potencial de incidente no C.'},
+       c:'Ordem ideal: C (12 tickets = potencial incidente) → B (Elite sem etiqueta via CSM) → A (Ouvidoria Diamante 5 dias em DEV) → D (L2 orientação) → E (levantamento diretoria). Sinal de alerta: priorizar E (diretoria) acima das urgências operacionais, ou não reconhecer potencial de incidente no C.',
+       notas:{5:'Ordem C→B→A→D→E com justificativa clara para cada escolha, reconhecendo o potencial de incidente no C.',4:'Ordem correta ou quase correta com justificativa parcial.',3:'Ordem razoável mas sem critério claro — prioriza por intuição.',2:'Trata E (diretoria) como prioridade máxima ou não reconhece potencial de incidente no C.',1:'Sem ordem clara ou justificativa.'}},
       {q:'O que você faz com cada uma das demandas?',
-       c:'Define o que atende primeiro, comunica para os outros que está ciente e dá prazo de retorno. Redireciona o que pode ser resolvido por outros (D pode ir para liderança do L2, E pode ser delegado com orientação). Não deixa ninguém sem resposta.'},
+       c:'Define o que atende primeiro, comunica para os outros que está ciente e dá prazo de retorno. Redireciona o que pode ser resolvido por outros (D pode ir para liderança do L2, E pode ser delegado com orientação). Não deixa ninguém sem resposta.',
+       notas:{5:'Define prioridade, comunica para todos com prazo de retorno e redireciona o que pode ser resolvido por outros. Ninguém fica sem resposta.',4:'Comunica para quem está esperando mas não redireciona nenhuma demanda.',3:'Redireciona algumas demandas mas não comunica para quem está esperando.',2:'Não comunica — deixa as pessoas esperando sem retorno.',1:'Não menciona o que fazer com as demandas.'}},
       {q:'Como você se comunica com quem está esperando?',
-       c:'Comunicação direta e honesta: "Estou ciente, atendendo uma prioridade urgente agora e retorno em X." Define prazo realista. Não promete o que não pode. Personaliza para cada demanda.'}
+       c:'Comunicação direta e honesta: "Estou ciente, atendendo uma prioridade urgente agora e retorno em X." Define prazo realista. Não promete o que não pode. Personaliza para cada demanda.',
+       notas:{5:'Comunicação direta e honesta com prazo realista definido. Não promete o que não pode. Personaliza para cada demanda.',4:'Comunica adequadamente mas sem definir prazo de retorno.',3:'Comunicação genérica — não personaliza para cada demanda.',2:'Comunicação confusa ou que gera mais ansiedade.',1:'Não menciona comunicação com quem está esperando.'}}
     ]},
   c4:{
     title:'Cenário 04 — Processos e melhoria contínua',
     qs:[
       {q:'Como você avalia o caso para entender se é uma falta de processo, documentação ou capacidade técnica?',
-       c:'Analisa os 15 tickets para identificar padrão. Conversa com os analistas L2 envolvidos. Verifica se existe processo ou documentação sobre o tema. Testa se o L2 consegue resolver com orientação pontual. Distingue claramente a causa antes de agir.'},
+       c:'Analisa os 15 tickets para identificar padrão. Conversa com os analistas L2 envolvidos. Verifica se existe processo ou documentação sobre o tema. Testa se o L2 consegue resolver com orientação pontual. Distingue claramente a causa antes de agir.',
+       notas:{5:'Analisa os tickets, conversa com o L2, verifica se existe processo/documentação e testa se conseguem resolver com orientação. Distingue a causa antes de agir.',4:'Faz análise dos tickets e conversa com o L2 mas não testa se conseguem resolver com orientação.',3:'Identifica o padrão nos tickets mas assume a causa sem validar com o time.',2:'Vai direto para a solução sem diagnóstico.',1:'Não descreve nenhum processo de diagnóstico.'}},
       {q:'O que você faz para resolver isso de forma definitiva?',
-       c:'Solução estrutural: criação ou atualização do processo + treinamento do L2 + acompanhamento por período. Não resolve só o caso pontual. Envolve a liderança do L2 na solução. Sinal de alerta: resolver os 15 casos individualmente sem endereçar a causa raiz.'},
+       c:'Solução estrutural: criação ou atualização do processo + treinamento do L2 + acompanhamento por período. Não resolve só o caso pontual. Envolve a liderança do L2 na solução. Sinal de alerta: resolver os 15 casos individualmente sem endereçar a causa raiz.',
+       notas:{5:'Propõe solução estrutural: processo + treinamento + acompanhamento. Envolve liderança do L2. Não resolve só o caso pontual.',4:'Propõe treinamento e processo mas sem acompanhamento posterior.',3:'Propõe orientação pontual sem criar processo ou documentação.',2:'Resolve os 15 casos individualmente sem endereçar a causa.',1:'Sem proposta de solução estrutural.'}},
       {q:'Como você mede se a solução funcionou?',
-       c:'Define métrica clara: redução de escalonamentos do mesmo tema nos próximos 30/60 dias. Acompanha ativamente e ajusta se necessário. Não aceita "vou ver se melhorou" como métrica.'},
+       c:'Define métrica clara: redução de escalonamentos do mesmo tema nos próximos 30/60 dias. Acompanha ativamente e ajusta se necessário. Não aceita "vou ver se melhorou" como métrica.',
+       notas:{5:'Define métrica clara (redução de escalonamentos em 30/60 dias), acompanha ativamente e ajusta se necessário.',4:'Define métrica mas sem acompanhamento ativo ou ajuste.',3:'Menciona acompanhamento mas sem métrica definida.',2:'"Vou ver se melhorou" — sem critério objetivo.',1:'Não menciona como vai medir.'}},
       {q:'Como você comunica essa situação para a liderança?',
-       c:'Apresenta o problema com dados (15 casos, 2 meses, mesmo tema), a causa identificada, a solução proposta e o impacto esperado. Tom propositivo, não apenas de reporte de problema.'}
+       c:'Apresenta o problema com dados (15 casos, 2 meses, mesmo tema), a causa identificada, a solução proposta e o impacto esperado. Tom propositivo, não apenas de reporte de problema.',
+       notas:{5:'Apresenta dados, causa identificada, solução proposta e impacto esperado. Tom propositivo.',4:'Comunica o problema com dados mas sem proposta de solução estruturada.',3:'Comunica o problema mas sem dados ou de forma vaga.',2:'Comunica apenas o sintoma sem contexto ou proposta.',1:'Não menciona comunicação com a liderança.'}}
     ]},
   c5:{
     title:'Cenário 05 — Gestão de backlog com DEV',
     qs:[
       {q:'Como você faz para mapear a situação atual da fila e entender o que está realmente parado?',
-       c:'Levanta todos os tickets, classifica por tempo parado e por impacto no cliente, verifica quais têm responsável definido, identifica os que nunca tiveram atualização. Cria visão clara do que está parado vs. em andamento antes de agir.'},
+       c:'Levanta todos os tickets, classifica por tempo parado e por impacto no cliente, verifica quais têm responsável definido, identifica os que nunca tiveram atualização. Cria visão clara do que está parado vs. em andamento antes de agir.',
+       notas:{5:'Levanta todos os tickets, classifica por tempo e impacto, verifica responsáveis e cria visão clara antes de agir.',4:'Faz o levantamento mas sem classificar por impacto ou sem distinguir parado de em andamento.',3:'Levantamento parcial — olha só os mais antigos ou só os sem responsável.',2:'Pergunta para o DEV o status sem fazer levantamento próprio antes.',1:'Não descreve processo de mapeamento.'}},
       {q:'Com base nesse levantamento, como você define a prioridade entre os casos novos e os casos parados?',
-       c:'Define critérios: impacto no cliente (quantos afetados, impacto operacional), tempo parado (casos com 8 meses merecem atenção especial), plano do cliente (Elite/Diamante têm prioridade). Não trata casos novos como prioritários só por serem novos.'},
+       c:'Define critérios: impacto no cliente (quantos afetados, impacto operacional), tempo parado (casos com 8 meses merecem atenção especial), plano do cliente (Elite/Diamante têm prioridade). Não trata casos novos como prioritários só por serem novos.',
+       notas:{5:'Define critérios claros: impacto, tempo parado e plano do cliente. Não trata casos novos como prioritários só por serem novos.',4:'Define critérios razoáveis mas não considera casos parados há muito tempo como categoria especial.',3:'Prioriza por plano sem considerar tempo parado ou impacto operacional.',2:'Prioriza só os casos novos e deixa os parados para depois.',1:'Sem critério de priorização definido.'}},
       {q:'Como você se comunica com o time de DEV para cobrar andamento sem prejudicar o relacionamento?',
-       c:'Agenda alinhamento com o DEV apresentando dados (tickets parados, impacto). Tom colaborativo: busca entender impedimentos antes de cobrar. Propõe solução conjunta: responsáveis definidos, prazo de retorno por ticket, processo de atualização periódica. Sinal de alerta: tom acusatório.'},
+       c:'Agenda alinhamento com o DEV apresentando dados (tickets parados, impacto). Tom colaborativo: busca entender impedimentos antes de cobrar. Propõe solução conjunta: responsáveis definidos, prazo de retorno por ticket, processo de atualização periódica. Sinal de alerta: tom acusatório.',
+       notas:{5:'Tom colaborativo, apresenta dados, busca entender impedimentos e propõe solução conjunta com responsáveis e prazos definidos.',4:'Abordagem colaborativa mas sem proposta de processo de acompanhamento.',3:'Cobra andamento mas de forma reativa, sem apresentar dados ou propor solução.',2:'Tom acusatório ou que pode gerar atrito com o time de DEV.',1:'Não menciona como vai se comunicar com o DEV.'}},
       {q:'Como você mantém os clientes e o time de suporte informados sobre casos que estão há meses sem resolução?',
-       c:'Define processo de atualização periódica para clientes com casos parados (mesmo sem novidade). Orienta time de suporte com script para não criar falsas expectativas. Distingue o que pode comunicar do que não pode.'}
+       c:'Define processo de atualização periódica para clientes com casos parados (mesmo sem novidade). Orienta time de suporte com script para não criar falsas expectativas. Distingue o que pode comunicar do que não pode.',
+       notas:{5:'Define processo de atualização periódica, orienta o time de suporte com script e distingue o que pode comunicar do que não pode.',4:'Define atualização periódica mas sem orientar o time de suporte.',3:'Menciona comunicar mas sem frequência definida ou sem considerar casos muito antigos.',2:'Só comunica quando tem novidade — clientes ficam sem retorno por meses.',1:'Não menciona processo de comunicação.'}}
     ]}
 };
 
@@ -291,8 +341,8 @@ function renderMain(){
           <div class="nota-btns">
             ${[1,2,3,4,5].map(n=>`<button class="nb ${nota===n?'selected':''}" onclick="setNota('${key}',${n})">${n}</button>`).join('')}
           </div>
-          ${nota?`<span style="font-size:12px;color:var(--green)">✓ ${nota} ponto${nota>1?'s':''}</span>`:''}
         </div>
+        ${nota&&q.notas&&q.notas[nota]?`<div style="margin-top:10px;background:rgba(147,245,116,.06);border:1px solid rgba(147,245,116,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--mist);line-height:1.65"><span style="color:var(--green);font-weight:600">Nota ${nota}:</span> ${q.notas[nota]}</div>`:''}
       </div>`;
     });
     html+=`</div>`;
