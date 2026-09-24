@@ -188,7 +188,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
 </div>
 
 <script>
-const SHEET_URL='https://script.google.com/a/macros/bling.com.br/s/AKfycbxsgyT22bd6abTAvTruYJSJATzgq1blZy9P9mQaP_klXzt-6eEwZWtffGm27tRbFvN9CA/exec';
+const SHEET_URL='https://n8n.product.dev.bling.com.br/webhook-test/738b2266-962a-464a-ae93-c97d7dc77994';
 const STORAGE_SESSION='bling_session_v1';
 
 // ── SESSÃO ────────────────────────────────────────────────────
@@ -394,10 +394,10 @@ function finish(timeout=false,isRetry=false){
   document.getElementById('sum').innerHTML=h;
   document.getElementById('timer-wrap').style.display='none';
   show('s-finish');
-  if(SHEET_URL&&SHEET_URL!=='https://script.google.com/a/macros/bling.com.br/s/AKfycbxsgyT22bd6abTAvTruYJSJATzgq1blZy9P9mQaP_klXzt-6eEwZWtffGm27tRbFvN9CA/exec'){
+  if(SHEET_URL&&SHEET_URL!=='https://n8n.product.dev.bling.com.br/webhook-test/738b2266-962a-464a-ae93-c97d7dc77994'){
     const payload={name:uName,email:uEmail,time:tStr,timeout,retry:isRetry};
     SC.forEach((s,i)=>s.qs.forEach((_,qi)=>{payload[`C${i+1}_Q${qi+1}`]=ans[i][qi]||''}));
-    fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)}).catch(()=>{});
+    fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(r=>r.json()).then(d=>console.log('Enviado:',d)).catch(e=>console.error('Erro:',e));
   }
 }
 </script>
