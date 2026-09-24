@@ -168,18 +168,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
   </div>
 </div>
 
-<!-- MODAL RETRY -->
-<div class="modal-overlay" id="modal-retry" style="display:none">
-  <div class="modal">
-    <div class="modal-icon">⚠️</div>
-    <h3 class="modal-title">Segunda submissão detectada</h3>
-    <p class="modal-desc">Este e-mail já possui uma resposta registrada. Se continuar, uma segunda submissão será enviada e a equipe avaliadora será notificada.</p>
-    <div class="modal-btns">
-      <button class="btn-p" onclick="confirmRetry()">Entendo, enviar mesmo assim</button>
-      <button class="btn-s" onclick="document.getElementById('modal-retry').style.display='none'">Cancelar</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- MODAL CONFIRMAÇÃO -->
 <div class="modal-overlay" id="modal-confirm" style="display:none">
@@ -293,7 +282,7 @@ const SC=[
        'Como você mantém os clientes e o time de suporte informados sobre casos que estão há meses sem resolução?']}
 ];
 
-let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),uName='',uEmail='',done=false,retryOk=false,startedAt=null,exportData=null;
+let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),uName='',uEmail='',done=false,startedAt=null,exportData=null;
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 
@@ -378,15 +367,13 @@ function render(i){
 
 function tryFinish(){
   if(done)return;saveCur();
-  // Show confirmation modal first
   document.getElementById('modal-confirm').style.display='flex';
 }
 
 function confirmSend(){
   document.getElementById('modal-confirm').style.display='none';
-  const prev=getEmails().some(x=>x.email===uEmail.toLowerCase());
-  if(prev&&!retryOk){document.getElementById('modal-retry').style.display='flex';return}
-  finish(false,retryOk);
+  const isRetry=getEmails().some(x=>x.email===uEmail.toLowerCase());
+  finish(false,isRetry);
 }
 
 function confirmRetry(){retryOk=true;document.getElementById('modal-retry').style.display='none';finish(false,true)}
