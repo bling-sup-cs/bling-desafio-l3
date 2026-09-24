@@ -320,7 +320,6 @@ function startChallenge(){
   err.style.display='none';
   uName=n;uEmail=e;
 
-  document.getElementById('hdr-sst').style.display='block';
   show('s-challenge');render(0);
   tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick()},1000);
 }
@@ -410,7 +409,6 @@ function finish(timeout=false,isRetry=false){
     h+=`<div class="sr"><span>${s.tag}</span><span style="color:${has?'var(--green)':'var(--t2)'}">${has?'✓ Respondido':'— Não respondido'}</span></div>`;
   });
   document.getElementById('sum').innerHTML=h;
-  document.getElementById('timer-wrap').style.display='none';
   show('s-finish');
   if(SUPABASE_URL&&SUPABASE_KEY){
     const payload={name:uName,email:uEmail,time:tStr,timeout,retry:isRetry};
