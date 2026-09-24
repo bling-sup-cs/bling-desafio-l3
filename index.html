@@ -405,7 +405,7 @@ function confirmRetry(){retryOk=true;document.getElementById('modal-retry').styl
 function finish(timeout=false,isRetry=false){
   if(done)return;done=true;
   saveCur();SC.forEach((_,i)=>updateCk(i));
-  exportData={name:uName,email:uEmail,scenarios:SC.map((sc,i)=>({tag:sc.tag,title:sc.title,questions:sc.questions,answers:[...ans[i]]}))};  
+  exportData={name:uName,email:uEmail,scenarios:SC.map((sc,i)=>({tag:sc.tag,title:sc.title,questions:sc.qs,answers:[...ans[i]]}))};
   clearInterval(tmrId);saveEmail(uEmail);clearSession();
   const used=7200-secs,hu=Math.floor(used/3600),mu=Math.floor((used%3600)/60);
   const tStr=hu>0?`${hu}h ${mu}min`:`${mu} min`;
