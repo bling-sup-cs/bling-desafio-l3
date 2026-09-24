@@ -319,7 +319,8 @@ function startChallenge(){
   }
   err.style.display='none';
   uName=n;uEmail=e;
-
+  startedAt=Date.now();
+  logSession('iniciou');
   show('s-challenge');render(0);
   tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick()},1000);
 }
