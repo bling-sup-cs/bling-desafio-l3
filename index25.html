@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio Técnico — L3 Operações e Qualidade</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--dark:#002726;--green:#93F574;--t1:#40615E;--t2:#678A88;--mist:#B9C9C9;--mist2:#E3EBEB;--white:#FFFFFF;--card:#03302F;--border:rgba(147,245,116,0.15);--border2:rgba(147,245,116,0.3)}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);-webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* ── HEADER ── */
+.hdr{height:68px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.logo{height:32px;width:auto}
+.badge{font-size:12px;font-weight:500;color:var(--green);border:1px solid var(--border2);padding:5px 16px;border-radius:99px}
+.timer-wrap{display:flex;align-items:center;gap:10px;background:rgba(147,245,116,.06);border:1px solid var(--border);border-radius:10px;padding:8px 18px}
+.timer-lbl{font-size:12px;color:var(--t2)}
+.timer-val{font-size:20px;font-weight:600;color:var(--green);font-variant-numeric:tabular-nums;min-width:72px}
+.timer-val.warn{color:#F6C343}
+.timer-val.crit{color:#E55B5B}
+
+/* ── SCREENS ── */
+.screen{display:none;height:calc(100vh - 68px);flex-direction:column}
+.screen.active{display:flex}
+
+/* ── WELCOME ── */
+.w-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;text-align:center}
+.w-tag{font-size:13px;color:var(--t2);margin-bottom:20px;letter-spacing:.04em}
+.w-title{font-size:44px;font-weight:600;line-height:1.15;margin-bottom:18px}
+.w-title em{color:var(--green);font-style:normal}
+.w-desc{font-size:15px;color:var(--mist);margin-bottom:40px;max-width:520px;line-height:1.7}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:680px;margin-bottom:40px}
+.info-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;text-align:left}
+.il{font-size:11px;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.iv{font-size:16px;color:var(--white);font-weight:500}
+.btn-p{background:var(--green);color:var(--dark);border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity .2s}
+.btn-p:hover{opacity:.88}
+.btn-s{background:transparent;color:var(--mist);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
+.btn-s:hover{border-color:var(--t2);color:var(--white)}
+
+/* ── EMAIL ── */
+.e-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;max-width:480px;margin:0 auto;text-align:center;width:100%}
+.fg{width:100%;margin-bottom:14px;text-align:left}
+.fg label{font-size:13px;color:var(--mist);margin-bottom:7px;display:block}
+.fg input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--white);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.fg input:focus{border-color:var(--green)}
+.fg input::placeholder{color:var(--t1)}
+
+/* ── CHALLENGE ── */
+.c-layout{flex:1;display:grid;grid-template-columns:240px 1fr;overflow:hidden}
+.sbar{background:var(--card);border-right:1px solid var(--border);padding:24px 18px;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.sbar-ttl{font-size:11px;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.sbtn{background:transparent;border:1px solid transparent;border-radius:10px;padding:12px 13px;text-align:left;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;width:100%}
+.sbtn:hover{background:rgba(147,245,116,.05);border-color:var(--border)}
+.sbtn.active{background:rgba(147,245,116,.09);border-color:var(--border2)}
+.sn{font-size:11px;color:var(--t2);margin-bottom:2px}
+.st{font-size:13px;color:var(--white);font-weight:500;line-height:1.4}
+.sc{font-size:11px;color:var(--green);margin-top:3px}
+.main{display:flex;flex-direction:column;overflow:hidden;height:100%}
+.main-scroll{flex:1;overflow-y:auto;padding:28px 40px}
+.main-footer{padding:14px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--dark)}
+.sc-tag{font-size:12px;color:var(--green);letter-spacing:.04em;margin-bottom:8px}
+.sc-title{font-size:22px;font-weight:600;margin-bottom:14px}
+.ctx{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:18px}
+.ctx-lbl{font-size:11px;color:var(--t2);letter-spacing:.05em;margin-bottom:8px;text-transform:uppercase}
+.ctx-txt{font-size:13px;color:var(--mist);line-height:1.75}
+.ctx-q{border-left:2px solid var(--green);padding-left:14px;margin:12px 0;font-style:italic;color:var(--mist2);font-size:13px}
+.qs{display:flex;flex-direction:column;gap:16px}
+.qlbl{font-size:13px;font-weight:500;color:var(--white);margin-bottom:8px;display:flex;gap:9px;line-height:1.5}
+.qn{color:var(--green);font-weight:600;flex-shrink:0}
+.ans{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;height:80px;line-height:1.65;transition:border-color .2s}
+.ans:focus{border-color:rgba(147,245,116,.45)}
+.ans::placeholder{color:var(--t1)}
+.sst{font-size:12px;color:var(--t2)}
+.sst.ok{color:var(--green)}
+.nr-r{display:flex;gap:10px}
+
+/* ── FINISH ── */
+.f-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;text-align:center;max-width:560px;margin:0 auto}
+.sum{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;text-align:left;margin-bottom:24px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.sr:last-child{border-bottom:none}
+.sr span:first-child{color:var(--mist)}
+.sr span:last-child{color:var(--white);font-weight:500}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:36px;max-width:440px;width:90%;text-align:center}
+.modal-icon{font-size:40px;margin-bottom:18px}
+.modal-title{font-size:20px;font-weight:600;margin-bottom:12px}
+.modal-desc{font-size:14px;color:var(--mist);margin-bottom:28px;line-height:1.65}
+.modal-btns{display:flex;flex-direction:column;gap:10px}
+.warn-box{background:rgba(246,195,67,.07);border:1px solid rgba(246,195,67,.3);border-radius:10px;padding:13px 16px;margin-bottom:16px;font-size:13px;color:#F6C343;line-height:1.6;text-align:left}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <img class="logo" id="logo" alt="Bling" src="data:image/png;base64,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">
+  <span class="badge">Processo Seletivo Interno</span>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="timer-wrap" id="timer-wrap" style="display:none">
+      <span class="timer-lbl">Tempo restante</span>
+      <span class="timer-val" id="tmr">2:00:00</span>
+    </div>
+    <span class="sst" id="hdr-sst" style="display:none"></span>
+  </div>
+</header>
+
+<!-- WELCOME -->
+<div class="screen active" id="s-welcome">
+  <div class="w-body">
+    <p class="w-tag">Suporte Técnico L3</p>
+    <h1 class="w-title">Desafio Técnico<br><em>L3 Operações e Qualidade</em></h1>
+    <p class="w-desc">Cinco cenários do dia a dia da vaga. Não existe resposta certa ou errada — queremos entender como você raciocina, prioriza e se comunica.</p>
+    <div class="info-grid">
+      <div class="info-item"><div class="il">Tempo</div><div class="iv">2 horas</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Tempo total, cronometrado a partir do início.</div></div>
+      <div class="info-item"><div class="il">Cenários</div><div class="iv">5 cenários</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Situações reais do dia a dia do Bling.</div></div>
+      <div class="info-item"><div class="il">Sem pausa</div><div class="iv">Contínuo</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">O cronômetro não para depois de iniciado.</div></div>
+      <div class="info-item"><div class="il">Respostas</div><div class="iv">Ao enviar</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Só são salvas após o envio final.</div></div>
+    </div>
+    <button class="btn-p" onclick="show('s-email')">Começar</button>
+  </div>
+</div>
+
+<!-- EMAIL -->
+<div class="screen" id="s-email">
+  <div class="e-body">
+    <p style="font-size:12px;color:var(--t2);margin-bottom:14px;letter-spacing:.05em">Antes de começar</p>
+    <h2 style="font-size:26px;font-weight:600;margin-bottom:10px">Suas informações</h2>
+    <p style="font-size:14px;color:var(--mist);margin-bottom:26px">Suas respostas serão salvas com seu e-mail para identificação.</p>
+    <div class="fg"><label>Nome completo</label><input type="text" id="inp-name" placeholder="Seu nome completo"></div>
+    <div class="fg">
+      <label>E-mail corporativo <span style="color:var(--t2);font-weight:400">(@bling.com.br)</span></label>
+      <input type="email" id="inp-email" placeholder="seu@bling.com.br" onblur="checkPrev()">
+      <p id="e-err" style="font-size:12px;color:#E55B5B;margin-top:5px;display:none">Preencha nome e e-mail válidos.</p>
+    </div>
+    <div class="warn-box" id="prev-warn" style="display:none">⚠️ Este e-mail já foi utilizado para enviar uma resposta anteriormente. Se continuar, uma segunda submissão será registrada.</div>
+    <button class="btn-p" onclick="startChallenge()" style="width:100%;margin-top:10px">Iniciar o desafio</button>
+  </div>
+</div>
+
+<!-- CHALLENGE -->
+<div class="screen" id="s-challenge">
+  <div class="c-layout">
+    <aside class="sbar">
+      <p class="sbar-ttl">Cenários</p>
+      <button class="sbtn active" id="nb-0" onclick="goTo(0)"><div class="sn">Cenário 01</div><div class="st">Triagem de Ouvidoria</div><div class="sc" id="ck-0"></div></button>
+      <button class="sbtn" id="nb-1" onclick="goTo(1)"><div class="sn">Cenário 02</div><div class="st">Gestão de Incidente</div><div class="sc" id="ck-1"></div></button>
+      <button class="sbtn" id="nb-2" onclick="goTo(2)"><div class="sn">Cenário 03</div><div class="st">Priorização sob pressão</div><div class="sc" id="ck-2"></div></button>
+      <button class="sbtn" id="nb-3" onclick="goTo(3)"><div class="sn">Cenário 04</div><div class="st">Processos e melhoria contínua</div><div class="sc" id="ck-3"></div></button>
+      <button class="sbtn" id="nb-4" onclick="goTo(4)"><div class="sn">Cenário 05</div><div class="st">Gestão de backlog com DEV</div><div class="sc" id="ck-4"></div></button>
+    </aside>
+    <div class="main">
+      <div class="main-scroll" id="main-scroll"></div>
+      <div class="main-footer">
+        <span style="font-size:12px;color:#F6C343;display:flex;align-items:center;gap:6px">⚠️ Não feche esta aba. Atualizar a página mantém o progresso, mas fechar o navegador apaga as respostas.</span>
+        <div class="nr-r" id="nav-btns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINISH -->
+<div class="screen" id="s-finish">
+  <div class="f-body">
+    <div style="font-size:44px;color:var(--green);margin-bottom:20px">✦</div>
+    <h2 style="font-size:32px;font-weight:600;margin-bottom:10px">Desafio <span style="color:var(--green)">concluído</span></h2>
+    <p style="font-size:14px;color:var(--mist);margin-bottom:28px;max-width:400px">Suas respostas foram registradas. O próximo passo é a apresentação para a banca.</p>
+    <div class="sum" id="sum"></div>
+    <p style="font-size:12px;color:var(--t2)">Dúvidas? Entre em contato com o RH.</p>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-retry" style="display:none">
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h3 class="modal-title">Segunda submissão detectada</h3>
+    <p class="modal-desc">Este e-mail já possui uma resposta registrada. Se continuar, uma segunda submissão será enviada e a equipe avaliadora será notificada.</p>
+    <div class="modal-btns">
+      <button class="btn-p" onclick="confirmRetry()">Entendo, enviar mesmo assim</button>
+      <button class="btn-s" onclick="document.getElementById('modal-retry').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SHEET_URL='https://n8n.product.dev.bling.com.br/webhook-test/738b2266-962a-464a-ae93-c97d7dc77994';
+const STORAGE_SESSION='bling_session_v1';
+
+// ── SESSÃO ────────────────────────────────────────────────────
+function saveSession(){
+  try{
+    localStorage.setItem(STORAGE_SESSION, JSON.stringify({
+      name:uName, email:uEmail,
+      startedAt: Number(startedAt),
+      answers: ans,
+      cur: cur
+    }));
+  }catch(e){}
+}
+
+function loadSession(){
+  try{
+    const raw = localStorage.getItem(STORAGE_SESSION);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+
+function clearSession(){
+  try{ localStorage.removeItem(STORAGE_SESSION); }catch(e){}
+}
+
+// Ao carregar a página, verifica se havia sessão em andamento
+window.addEventListener('load', () => {
+  const session = loadSession();
+  if(!session || !session.name || !session.email || !session.startedAt) return;
+  const elapsed = Math.floor((Date.now() - Number(session.startedAt)) / 1000);
+  const remaining = 7200 - elapsed;
+  if(remaining <= 0){
+    // Tempo esgotado — limpa sessão
+    clearSession();
+    return;
+  }
+  // Restaura sessão
+  uName = session.name;
+  uEmail = session.email;
+  startedAt = session.startedAt;
+  ans = session.answers || SC.map(s=>s.qs.map(()=>''));
+  secs = remaining;
+  cur = session.cur || 0;
+  document.getElementById('timer-wrap').style.display='flex';
+  show('s-challenge');
+  render(cur);
+  document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===cur));
+  tick(); // atualiza display imediatamente
+  tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick();saveSession()},1000);
+});
+const STORAGE_KEY='bling_desafio_v1';
+const SC=[
+  {tag:'Cenário 01',title:'Triagem de Ouvidoria',
+   ctx:'O time de qualidade te encaminha duas ouvidorias ao mesmo tempo:',
+   list:[
+     '📋 Caso A — Cliente Elite: O ticket referencia outro ticket já escalado para o time de Desenvolvimento há 10 dias sem responsável definido. O cliente está sem emitir notas fiscais, impactando diretamente o despacho das suas mercadorias.',
+     '📋 Caso B — Cliente Diamante: O cliente está com problemas na importação de pedidos das lojas virtuais. Ocorre um erro genérico que o time de qualidade não conseguiu identificar. O problema já acontece há 1 semana e o cliente ameaça abrir uma ação judicial.'
+   ],
+   qs:['Como você define a prioridade entre os dois casos? Justifique seu raciocínio.',
+       'Quais são os primeiros passos que você toma em cada caso — o que você busca no sistema e por quê?',
+       'Durante a investigação, como você mantém o time de qualidade informado sobre o andamento?',
+       'Como você lida com cada caso até a resolução? Descreva seu processo.',
+       'Durante o atendimento, o cliente Diamante menciona que, caso o problema não seja resolvido em breve, irá acionar o jurídico da empresa. Como você age a partir desse momento? Quem você envolve, o que você comunica e quais são seus próximos passos?']},
+  {tag:'Cenário 02',title:'Gestão de Incidente',
+   ctx:'São 10h de uma segunda-feira. O sistema está com lentidão generalizada. Em 15 minutos, 87 tickets foram abertos por clientes diferentes relatando o mesmo problema. Reclamações no Reclame Aqui começam a surgir. O time de Infra já foi avisado, mas ainda não respondeu.',
+   qs:['Quais são suas prioridades nos primeiros 10 minutos? Como você age enquanto o time de Infra não responde?',
+       'Escreva o texto do aviso de incidente que você criaria no sistema — será visto pela equipe de atendimento e pelos clientes ao mesmo tempo.',
+       'Como você acompanha e atualiza o incidente enquanto aguarda o time de Infra? O que você monitora durante esse período?',
+       'O problema é resolvido 2 horas depois. Escreva a mensagem de encerramento que será enviada para todos os clientes impactados.']},
+  {tag:'Cenário 03',title:'Priorização sob pressão',
+   ctx:'É uma terça-feira de manhã e você recebeu as demandas abaixo ao mesmo tempo:',
+   list:['A) Ouvidoria de um cliente Diamante aberta há 5 dias sem resposta, sobre uma nota fiscal emitida com erro — está com o time de Desenvolvimento.',
+         'B) Time de CSM te chama para informar que um cliente Elite está sem conseguir gerar etiqueta de envio dos pedidos.',
+         'C) 12 tickets de clientes com mesmo erro de integração — todos abertos hoje.',
+         'D) Time de L2 pedindo orientação sobre incidentes que estão em aberto.',
+         'E) Gestão solicita levantamento dos principais problemas que ocorreram na semana passada para apresentação para a diretoria.'],
+   qs:['Em que ordem você trata cada uma dessas demandas? Justifique seu raciocínio.',
+       'O que você faz com cada uma das demandas que não consegue atender imediatamente?',
+       'Como você se comunica com quem está esperando enquanto você trata as prioridades?']},
+  {tag:'Cenário 04',title:'Processos e melhoria contínua',
+   ctx:'Nos últimos 2 meses o time de L2 escalou mais de 15 chamados sobre o mesmo tema — erro de configuração de uma integração — sendo que a maioria poderia ter sido resolvida no próprio L2.',
+   qs:['Como você avalia o caso para entender se é uma falta de processo, documentação ou capacidade técnica?',
+       'O que você faz para resolver isso de forma definitiva?',
+       'Como você mede se a solução funcionou?',
+       'Como você comunica essa situação para a liderança?']},
+  {tag:'Cenário 05',title:'Gestão de backlog e priorização com DEV',
+   ctx:'O time de ERP está com 80 tickets na fila de desenvolvimento, com alguns casos parados há até 8 meses sem atualização. Você não tem visibilidade clara sobre o status de cada um — quais estão em andamento, quais estão parados e por quê.',
+   qs:['Como você faz para mapear a situação atual da fila e entender o que está realmente parado?',
+       'Com base nesse levantamento, como você define a prioridade entre os casos novos e os casos parados?',
+       'Como você se comunica com o time de DEV para cobrar andamento sem prejudicar o relacionamento?',
+       'Como você mantém os clientes e o time de suporte informados sobre casos que estão há meses sem resolução?']}
+];
+
+let cur=0,ans=SC.map(s=>s.qs.map(()=>'')),secs=7200,tmrId=null,uName='',uEmail='',done=false,retryOk=false,startedAt=null;
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function getEmails(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return[]}}
+function saveEmail(e){try{const l=getEmails();l.push({email:e.toLowerCase(),at:new Date().toISOString()});localStorage.setItem(STORAGE_KEY,JSON.stringify(l))}catch{}}
+function checkPrev(){
+  const e=document.getElementById('inp-email').value.trim().toLowerCase();
+  const found=getEmails().some(x=>x.email===e);
+  document.getElementById('prev-warn').style.display=found?'block':'none';
+}
+
+function startChallenge(){
+  const n=document.getElementById('inp-name').value.trim();
+  const e=document.getElementById('inp-email').value.trim();
+  const err=document.getElementById('e-err');
+  if(!n||!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){
+    err.textContent='Preencha nome e e-mail válidos.';
+    err.style.display='block';return
+  }
+  if(!e.toLowerCase().endsWith('@bling.com.br')){
+    err.textContent='Use seu e-mail corporativo @bling.com.br para acessar o desafio.';
+    err.style.display='block';return
+  }
+  err.style.display='none';
+  uName=n;uEmail=e;
+  document.getElementById('timer-wrap').style.display='flex';
+  document.getElementById('hdr-sst').style.display='block';
+  show('s-challenge');render(0);
+  tmrId=setInterval(()=>{if(secs<=0){clearInterval(tmrId);finish(true);return}secs--;tick()},1000);
+}
+
+function tick(){
+  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
+  const el=document.getElementById('tmr');if(!el)return;
+  el.textContent=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='timer-val'+(secs<=600?' crit':secs<=1800?' warn':'');
+}
+
+function saveCur(){SC[cur].qs.forEach((_,qi)=>{const el=document.getElementById(`a${cur}-${qi}`);if(el)ans[cur][qi]=el.value})}
+
+let liveT=null;
+function saveAnswerLive(el){
+  try{
+    if(!el || !el.id) return;
+    const parts = el.id.substring(1).split('-');
+    if(parts.length < 2) return;
+    const si = parseInt(parts[0]);
+    const qi = parseInt(parts[1]);
+    if(isNaN(si)||isNaN(qi)) return;
+    if(!ans[si]) return;
+    ans[si][qi] = el.value;
+    clearTimeout(liveT);
+    liveT = setTimeout(()=>{ saveSession(); }, 500);
+  }catch(err){}
+}
+
+
+
+function updateCk(i){document.getElementById(`ck-${i}`).textContent=ans[i].some(v=>v.trim())?'✓ Respondido':''}
+
+function goTo(i){
+  saveCur();updateCk(cur);cur=i;saveSession();
+  document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  render(i);document.getElementById('main-scroll').scrollTo(0,0);
+}
+
+function render(i){
+  const s=SC[i];
+  let h=`<p class="sc-tag">${s.tag} de ${SC.length}</p><h2 class="sc-title">${s.title}</h2>
+    <div class="ctx"><p class="ctx-lbl">Situação</p>
+    <p class="ctx-txt">${(s.ctx||'').replace(/\n/g,'<br>')}</p>
+    ${s.quote?`<p class="ctx-q">${s.quote}</p>`:''}
+    ${s.ctx2?`<p class="ctx-txt" style="margin-top:10px">${s.ctx2}</p>`:''}
+    ${s.list?`<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">${s.list.map(l=>`<div style="font-size:13px;color:var(--mist);padding:8px 12px;background:rgba(147,245,116,.03);border:1px solid var(--border);border-radius:8px">${l}</div>`).join('')}</div>`:''}</div>
+    <div class="qs">`;
+  s.qs.forEach((q,qi)=>{
+    h+=`<div><p class="qlbl"><span class="qn">${qi+1}.</span><span>${q}</span></p>
+    <textarea class="ans" id="a${i}-${qi}" placeholder="Escreva sua resposta aqui…" oninput="saveAnswerLive(this)">${ans[i][qi]||''}</textarea></div>`;
+  });
+  h+=`</div>`;
+  document.getElementById('main-scroll').innerHTML=h;
+  document.getElementById('nav-btns').innerHTML=
+    (i>0?`<button class="btn-s" onclick="goTo(${i-1})">← Anterior</button>`:'')+
+    (i<4?`<button class="btn-p" onclick="goTo(${i+1})" style="padding:12px 28px">Próximo →</button>`
+        :`<button class="btn-p" onclick="tryFinish()" style="padding:12px 28px">Finalizar desafio</button>`);
+}
+
+function tryFinish(){
+  if(done)return;saveCur();
+  const prev=getEmails().some(x=>x.email===uEmail.toLowerCase());
+  if(prev&&!retryOk){document.getElementById('modal-retry').style.display='flex';return}
+  finish(false,retryOk);
+}
+
+function confirmRetry(){retryOk=true;document.getElementById('modal-retry').style.display='none';finish(false,true)}
+
+function finish(timeout=false,isRetry=false){
+  if(done)return;done=true;
+  saveCur();SC.forEach((_,i)=>updateCk(i));
+  clearInterval(tmrId);saveEmail(uEmail);clearSession();
+  const used=7200-secs,hu=Math.floor(used/3600),mu=Math.floor((used%3600)/60);
+  const tStr=hu>0?`${hu}h ${mu}min`:`${mu} min`;
+  let h=`<div class="sr"><span>Candidato</span><span>${uName}</span></div>
+    <div class="sr"><span>E-mail</span><span>${uEmail}</span></div>
+    <div class="sr"><span>Tempo utilizado</span><span>${tStr}</span></div>
+    ${isRetry?'<div class="sr"><span>Observação</span><span style="color:#F6C343">⚠️ Segunda submissão</span></div>':''}`;
+  SC.forEach((s,i)=>{
+    const has=ans[i].some(v=>v.trim());
+    h+=`<div class="sr"><span>${s.tag}</span><span style="color:${has?'var(--green)':'var(--t2)'}">${has?'✓ Respondido':'— Não respondido'}</span></div>`;
+  });
+  document.getElementById('sum').innerHTML=h;
+  document.getElementById('timer-wrap').style.display='none';
+  show('s-finish');
+  if(SHEET_URL&&SHEET_URL!=='https://n8n.product.dev.bling.com.br/webhook-test/738b2266-962a-464a-ae93-c97d7dc77994'){
+    const payload={name:uName,email:uEmail,time:tStr,timeout,retry:isRetry};
+    SC.forEach((s,i)=>s.qs.forEach((_,qi)=>{payload[`C${i+1}_Q${qi+1}`]=ans[i][qi]||''}));
+    console.log('Enviando para:', SHEET_URL);
+    fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(r=>r.json()).then(d=>console.log('Enviado com sucesso:',d)).catch(e=>console.error('Erro no envio:',e));
+  }
+}
+</script>
+</body>
+</html>
