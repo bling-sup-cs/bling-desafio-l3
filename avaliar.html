@@ -363,7 +363,9 @@ async function saveNotes(){
   const st=document.getElementById('save-status');
   st.textContent='Salvando…';st.className='save-status';
 
-  const payload={submission_id:currentSub.id,name:currentSub.name,email:currentSub.email,...notes};
+  // Remove id and created_at from notes before saving
+  const {id:_id, created_at:_ca, ...cleanNotes}=notes;
+  const payload={submission_id:currentSub.id,name:currentSub.name,email:currentSub.email,...cleanNotes};
   const existing=avaliacoes[currentSub.id];
 
   let r;
