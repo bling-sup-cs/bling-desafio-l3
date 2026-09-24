@@ -126,10 +126,9 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <div class="fg"><label>Nome completo</label><input type="text" id="inp-name" placeholder="Seu nome completo"></div>
     <div class="fg">
       <label>E-mail corporativo <span style="color:var(--t2);font-weight:400">(@bling.com.br)</span></label>
-      <input type="email" id="inp-email" placeholder="seu@bling.com.br" onblur="checkPrev()">
+      <input type="email" id="inp-email" placeholder="seu@bling.com.br" onkeydown="if(event.key==='Enter')startChallenge()">
       <p id="e-err" style="font-size:12px;color:#E55B5B;margin-top:5px;display:none">Preencha nome e e-mail válidos.</p>
     </div>
-    <div class="warn-box" id="prev-warn" style="display:none">⚠️ Este e-mail já foi utilizado para enviar uma resposta anteriormente. Se continuar, uma segunda submissão será registrada.</div>
     <button class="btn-p" onclick="startChallenge()" style="width:100%;margin-top:10px">Iniciar o desafio</button>
   </div>
 </div>
