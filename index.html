@@ -326,17 +326,18 @@ function saveCur(){SC[cur].qs.forEach((_,qi)=>{const el=document.getElementById(
 
 let liveT=null;
 function saveAnswerLive(el){
-  if(!el || !el.id) return;
-  // Find which question this textarea belongs to - format: a{scenario}-{question}
-  const parts = el.id.substring(1).split('-');
-  if(parts.length < 2) return;
-  const si = parseInt(parts[0]);
-  const qi = parseInt(parts[1]);
-  if(isNaN(si) || isNaN(qi)) return;
-  ans[si][qi] = el.value;
-  // Debounce localStorage save
-  clearTimeout(liveT);
-  liveT = setTimeout(()=>{ saveSession(); }, 500);
+  try{
+    if(!el || !el.id) return;
+    const parts = el.id.substring(1).split('-');
+    if(parts.length < 2) return;
+    const si = parseInt(parts[0]);
+    const qi = parseInt(parts[1]);
+    if(isNaN(si)||isNaN(qi)) return;
+    if(!ans[si]) return;
+    ans[si][qi] = el.value;
+    clearTimeout(liveT);
+    liveT = setTimeout(()=>{ saveSession(); }, 500);
+  }catch(err){}
 }
 
 
