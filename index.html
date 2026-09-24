@@ -168,13 +168,15 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
   <div class="f-body">
     <div style="font-size:44px;color:var(--green);margin-bottom:20px">✦</div>
     <h2 style="font-size:32px;font-weight:600;margin-bottom:10px">Desafio <span style="color:var(--green)">concluído</span></h2>
-    <p style="font-size:14px;color:var(--mist);margin-bottom:28px;max-width:400px">Suas respostas foram registradas. O próximo passo é a apresentação para a banca.</p>
+    <p style="font-size:14px;color:var(--mist);margin-bottom:8px;max-width:400px">Suas respostas foram registradas com sucesso.</p>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:28px;max-width:400px">⚠️ Não é possível editar ou reenviar suas respostas.</p>
     <div class="sum" id="sum"></div>
+    <button class="btn-p" onclick="exportPDF()" style="margin-bottom:14px;max-width:320px">⬇ Exportar minhas respostas</button>
     <p style="font-size:12px;color:var(--t2)">Dúvidas? Entre em contato com o RH.</p>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL RETRY -->
 <div class="modal-overlay" id="modal-retry" style="display:none">
   <div class="modal">
     <div class="modal-icon">⚠️</div>
@@ -183,6 +185,19 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <div class="modal-btns">
       <button class="btn-p" onclick="confirmRetry()">Entendo, enviar mesmo assim</button>
       <button class="btn-s" onclick="document.getElementById('modal-retry').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal-overlay" id="modal-confirm" style="display:none">
+  <div class="modal">
+    <div class="modal-icon">📋</div>
+    <h3 class="modal-title">Confirmar envio</h3>
+    <p class="modal-desc">Ao confirmar, suas respostas serão enviadas e <strong>não será possível editar</strong> ou enviar novamente. Tem certeza que deseja enviar agora?</p>
+    <div class="modal-btns">
+      <button class="btn-p" onclick="confirmSend()">Sim, enviar minhas respostas</button>
+      <button class="btn-s" onclick="document.getElementById('modal-confirm').style.display='none'">Voltar e revisar</button>
     </div>
   </div>
 </div>
@@ -374,6 +389,12 @@ function render(i){
 
 function tryFinish(){
   if(done)return;saveCur();
+  // Show confirmation modal first
+  document.getElementById('modal-confirm').style.display='flex';
+}
+
+function confirmSend(){
+  document.getElementById('modal-confirm').style.display='none';
   const prev=getEmails().some(x=>x.email===uEmail.toLowerCase());
   if(prev&&!retryOk){document.getElementById('modal-retry').style.display='flex';return}
   finish(false,retryOk);
@@ -420,6 +441,37 @@ function finish(timeout=false,isRetry=false){
       })
     }).then(r=>{if(r.ok){console.log('Salvo no Supabase!')}else{r.text().then(t=>console.error('Erro Supabase:',t))}}).catch(e=>console.error('Erro:',e));
   }
+}
+
+function exportPDF(){
+  const lines = [];
+  lines.push('DESAFIO TÉCNICO — L3 OPERAÇÕES E QUALIDADE');
+  lines.push('='.repeat(50));
+  lines.push('');
+  lines.push('Candidato: ' + uName);
+  lines.push('E-mail: ' + uEmail);
+  lines.push('');
+
+  SC.forEach((sc, i) => {
+    lines.push('-'.repeat(50));
+    lines.push(sc.tag.toUpperCase() + ' — ' + sc.title.toUpperCase());
+    lines.push('-'.repeat(50));
+    sc.questions.forEach((q, qi) => {
+      lines.push('');
+      lines.push((qi+1) + '. ' + q);
+      lines.push('');
+      lines.push(ans[i][qi] || '(Não respondido)');
+    });
+    lines.push('');
+  });
+
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'desafio-l3-' + uName.replace(/\s+/g,'-').toLowerCase() + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 </body>
