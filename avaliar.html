@@ -65,6 +65,23 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
 .score-val{font-size:24px;font-weight:600;color:var(--green)}
 .score-lbl{font-size:11px;color:var(--t2);margin-top:2px}
 .loading{font-size:12px;color:var(--t2);padding:12px 0}
+/* PARECER FINAL */
+.parecer-block{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:24px;margin-top:8px;margin-bottom:20px}
+.parecer-title{font-size:14px;font-weight:600;color:var(--green);margin-bottom:18px}
+.obs-lbl{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.obs-ta{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:68px;line-height:1.65;transition:border-color .2s}
+.obs-ta:focus{border-color:rgba(147,245,116,.5)}
+.obs-ta::placeholder{color:var(--t1)}
+/* IA */
+.ia-block{background:var(--card);border:1px solid rgba(246,195,67,.25);border-radius:14px;padding:24px;margin-bottom:32px}
+.ia-title{font-size:14px;font-weight:600;color:var(--warn);margin-bottom:6px}
+.ia-desc{font-size:12px;color:var(--mist);margin-bottom:18px;line-height:1.6}
+.ia-nivel-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.nivel-btn{padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--mist);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.nivel-btn:hover{border-color:var(--warn);color:var(--warn)}
+.nivel-btn.sel-baixa{background:rgba(147,245,116,.15);border-color:var(--green);color:var(--green)}
+.nivel-btn.sel-media{background:rgba(246,195,67,.15);border-color:var(--warn);color:var(--warn)}
+.nivel-btn.sel-alta{background:rgba(229,91,91,.15);border-color:#E55B5B;color:#E55B5B}
 </style>
 </head>
 <body>
@@ -316,12 +333,11 @@ function renderMain(){
       <div class="scenario-title">◆ ${escHtml(sc.title)}</div>`;
     sc.qs.forEach((q,qi)=>{
       const key=`${ck}_q${qi+1}`;
-      // FIX: lê a resposta corretamente (c1_q1 minúsculo = coluna Supabase)
-      const ans = getAns(s, key);
+      const ans=getAns(s,key);
       const nota=notes[key]||0;
       html+=`<div class="qa-block">
         <p class="q-text"><span class="q-num">${qi+1}.</span>${escHtml(q.q)}</p>
-        <div class="answer-box ${!ans?'answer-empty':''}">${ans ? escHtml(ans) : 'Não respondido'}</div>
+        <div class="answer-box ${!ans?'answer-empty':''}">${ans?escHtml(ans):'Não respondido'}</div>
         <div class="criteria-box">
           <p class="criteria-lbl">📋 Critério de avaliação</p>
           <p class="criteria-txt">${escHtml(q.c)}</p>
@@ -338,7 +354,56 @@ function renderMain(){
     html+=`</div>`;
   });
 
-  // Guarda posição do scroll atual antes de re-renderizar
+  // ── BLOCO FINAL DE PARECER ──────────────────────────────────
+  const obsGeral=notes['obs_geral']||'';
+  const iaNivel=notes['ia_nivel']||'';
+  const iaObs=notes['obs_ia']||'';
+
+  // Tabela resumo por cenário
+  const resumoRows=Object.keys(CRITERIA).map(ck=>{
+    const sc=CRITERIA[ck].qs.reduce((sum,_,qi)=>sum+(notes[`${ck}_q${qi+1}`]||0),0);
+    const max=CRITERIA[ck].qs.length*5;
+    const pct=max>0?sc/max:0;
+    const cor=pct>=0.8?'var(--green)':pct>=0.5?'var(--warn)':'#E55B5B';
+    return `<tr>
+      <td style="padding:10px 12px;font-size:13px;color:var(--mist);border-bottom:1px solid rgba(147,245,116,.07)">${escHtml(CRITERIA[ck].title)}</td>
+      <td style="padding:10px 12px;font-size:14px;font-weight:600;color:${cor};border-bottom:1px solid rgba(147,245,116,.07);white-space:nowrap">${sc}/${max}</td>
+    </tr>`;
+  }).join('');
+
+  html+=`<div class="parecer-block">
+    <div class="parecer-title">📊 Parecer final</div>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;background:rgba(0,0,0,.15);border-radius:8px;overflow:hidden">
+      <thead>
+        <tr>
+          <th style="padding:9px 12px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border)">Cenário</th>
+          <th style="padding:9px 12px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border)">Pontuação</th>
+        </tr>
+      </thead>
+      <tbody>${resumoRows}</tbody>
+    </table>
+
+    <p class="obs-lbl" style="margin-bottom:8px">💬 Observações gerais</p>
+    <textarea class="obs-ta" id="obs_geral"
+      placeholder="Pontos fortes, pontos fracos, recomendação geral sobre o candidato…"
+      oninput="setObs('obs_geral',this.value)"
+      style="min-height:110px">${escHtml(obsGeral)}</textarea>
+  </div>
+
+  <div class="ia-block">
+    <p class="ia-title">🤖 Análise de Uso de IA</p>
+    <p class="ia-desc">Sinais a observar: uniformidade de estrutura entre cenários, linguagem excessivamente polida, ausência de exemplos ou marcas pessoais, tempo de preenchimento suspeito, vocabulário técnico perfeito sem variação.</p>
+    <p style="font-size:12px;color:var(--mist);margin-bottom:10px;font-weight:500">Suspeita de uso:</p>
+    <div class="ia-nivel-row">
+      ${['baixa','media','alta'].map(n=>`<button class="nivel-btn ${iaNivel===n?'sel-'+n:''}" onclick="setNivel('${n}')">${n.charAt(0).toUpperCase()+n.slice(1)}</button>`).join('')}
+    </div>
+    <textarea class="obs-ta" id="obs_ia"
+      placeholder="Descreva os sinais observados…"
+      oninput="setObs('obs_ia',this.value)"
+      style="min-height:100px">${escHtml(iaObs)}</textarea>
+  </div>`;
+
   const mainArea=document.getElementById('main-area');
   const scrollTop=mainArea.scrollTop;
   mainArea.innerHTML=html;
@@ -347,8 +412,20 @@ function renderMain(){
 
 function setNota(key,val){
   notes[key]=val;
-  // Re-render mantendo scroll
   renderMain();
+}
+
+function setObs(key,val){
+  notes[key]=val;
+}
+
+function setNivel(val){
+  notes['ia_nivel']=val;
+  // Atualiza só os botões de nível sem re-renderizar tudo
+  document.querySelectorAll('.nivel-btn').forEach(b=>{
+    b.className='nivel-btn';
+    if(b.textContent.toLowerCase()===val) b.className='nivel-btn sel-'+val;
+  });
 }
 
 async function saveNotes(){
