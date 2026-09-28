@@ -488,6 +488,32 @@ function showDetail(id){
     });
     html+=`</div>`;
   });
+
+  // Parecer final
+  const obsGeral=c.av&&c.av['obs_geral']?c.av['obs_geral']:'';
+  const iaNivel=c.av&&c.av['ia_nivel']?c.av['ia_nivel']:'';
+  const iaObs=c.av&&c.av['obs_ia']?c.av['obs_ia']:'';
+
+  if(obsGeral||iaNivel||iaObs){
+    html+=`<div style="background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:24px;margin-top:4px">
+      <p style="font-size:14px;font-weight:600;color:var(--green);margin-bottom:18px">📊 Parecer final</p>`;
+
+    if(obsGeral){
+      html+=`<p style="font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">💬 Observações gerais</p>
+      <p style="font-size:13px;color:var(--mist);line-height:1.75;white-space:pre-wrap;background:rgba(0,0,0,.15);border-radius:8px;padding:12px 14px">${esc(obsGeral)}</p>`;
+    }
+
+    if(iaNivel||iaObs){
+      const nivelColor=iaNivel==='alta'?'#E55B5B':iaNivel==='media'?'var(--warn)':'var(--green)';
+      html+=`<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <p style="font-size:14px;font-weight:600;color:var(--warn);margin-bottom:10px">🤖 Análise de Uso de IA</p>
+        ${iaNivel?`<p style="margin-bottom:10px;font-size:13px">Suspeita: <strong style="color:${nivelColor}">${iaNivel.toUpperCase()}</strong></p>`:''}
+        ${iaObs?`<p style="font-size:13px;color:var(--mist);line-height:1.75;white-space:pre-wrap">${esc(iaObs)}</p>`:''}
+      </div>`;
+    }
+    html+=`</div>`;
+  }
+
   html+=`</div>`;
 
   document.getElementById('detail-content').innerHTML=html;
