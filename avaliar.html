@@ -439,6 +439,10 @@ async function saveNotes(){
     email: currentSub.email,
     ...notes
   };
+  // Remove campos gerados automaticamente pelo Supabase
+  delete payload.id;
+  delete payload.created_at;
+  delete payload.updated_at;
 
   const existing=avaliacoes[Number(currentSub.id)];
   let r;
