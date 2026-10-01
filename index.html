@@ -163,7 +163,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
     <p style="font-size:14px;color:var(--mist);margin-bottom:8px;max-width:400px">Suas respostas foram registradas com sucesso.</p>
     <p style="font-size:13px;color:var(--t2);margin-bottom:28px;max-width:400px">⚠️ Não é possível editar ou reenviar suas respostas.</p>
     <div class="sum" id="sum"></div>
-    <button class="btn-p" onclick="exportPDF()" style="margin-bottom:14px;max-width:320px">⬇ Exportar minhas respostas</button>
+    <button class="btn-p" onclick="exportPDF()" style="margin-bottom:14px;max-width:320px">⬇ Exportar respostas em PDF</button>
     <p style="font-size:12px;color:var(--t2)">Dúvidas? Entre em contato com o RH.</p>
   </div>
 </div>
@@ -424,34 +424,51 @@ function finish(timeout=false,isRetry=false){
 function exportPDF(){
   try{
     if(!exportData){console.error('Sem dados para exportar');return;}
-    const lines = [];
-    lines.push('DESAFIO TÉCNICO — L3 OPERAÇÕES E QUALIDADE');
-    lines.push('='.repeat(50));
-    lines.push('');
-    lines.push('Candidato: ' + exportData.name);
-    lines.push('E-mail: ' + exportData.email);
-    lines.push('');
+
+    const win = window.open('','_blank');
+    win.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Desafio — ${exportData.name}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;color:#1a1a1a;background:#fff;padding:40px;max-width:800px;margin:0 auto}
+  h1{font-size:20px;font-weight:600;margin-bottom:4px;color:#002726}
+  .subtitle{font-size:13px;color:#555;margin-bottom:6px}
+  .meta{font-size:12px;color:#777;margin-bottom:32px;padding-bottom:16px;border-bottom:2px solid #002726}
+  .scenario{margin-bottom:32px;page-break-inside:avoid}
+  .scenario-title{font-size:14px;font-weight:600;color:#002726;background:#f0faf0;padding:10px 14px;border-left:4px solid #93F574;margin-bottom:16px;border-radius:0 6px 6px 0}
+  .qa{margin-bottom:18px}
+  .question{font-size:13px;font-weight:500;color:#333;margin-bottom:8px;line-height:1.6}
+  .qnum{color:#002726;font-weight:700;margin-right:4px}
+  .answer{font-size:13px;color:#444;line-height:1.75;background:#fafafa;padding:12px 14px;border-radius:6px;border:1px solid #e5e5e5;white-space:pre-wrap;min-height:40px}
+  .empty{color:#999;font-style:italic}
+  @media print{body{padding:20px}button{display:none}}
+</style>
+</head>
+<body>
+<h1>Desafio Técnico — Analista de Suporte ao Cliente III</h1>
+<p class="subtitle">${exportData.name} · ${exportData.email}</p>
+<p class="meta">Respostas exportadas em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</p>`);
+
     exportData.scenarios.forEach((sc,i)=>{
-      lines.push('-'.repeat(50));
-      lines.push(sc.tag.toUpperCase() + ' — ' + sc.title.toUpperCase());
-      lines.push('-'.repeat(50));
+      win.document.write(`<div class="scenario">
+        <div class="scenario-title">${sc.tag} — ${sc.title}</div>`);
       sc.questions.forEach((q,qi)=>{
-        lines.push('');
-        lines.push((qi+1) + '. ' + q);
-        lines.push('');
-        lines.push(sc.answers[qi] || '(Não respondido)');
+        const ans = sc.answers[qi]||'';
+        win.document.write(`<div class="qa">
+          <p class="question"><span class="qnum">${qi+1}.</span>${q}</p>
+          <div class="answer ${!ans?'empty':''}">${ans||'Não respondido'}</div>
+        </div>`);
       });
-      lines.push('');
+      win.document.write(`</div>`);
     });
-    const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'desafio-l3-' + exportData.name.replace(/\s+/g,'-').toLowerCase() + '.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    win.document.write(`</body></html>`);
+    win.document.close();
+    setTimeout(()=>win.print(), 800);
   }catch(e){console.error('Erro ao exportar:',e);}
 }
 </script>
