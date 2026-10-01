@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desafio Técnico — L3 Operações e Qualidade</title>
+<title>Desafio Técnico — Analista de Suporte ao Cliente III</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -105,12 +105,12 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--dark);colo
 <div class="screen active" id="s-welcome">
   <div class="w-body">
     <p class="w-tag">Suporte Técnico L3</p>
-    <h1 class="w-title">Desafio Técnico<br><em>L3 Operações e Qualidade</em></h1>
+    <h1 class="w-title">Desafio Técnico<br><em>Analista de Suporte ao Cliente III</em></h1>
     <p class="w-desc">Cinco cenários do dia a dia da vaga. Não existe resposta certa ou errada — queremos entender como você raciocina, prioriza e se comunica.</p>
-    <div class="info-grid">
-      <div class="info-item"><div class="il">Tempo</div><div class="iv">Livre</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Sem limite de tempo — responda com calma.</div></div>
+    <div class="info-grid" style="grid-template-columns:repeat(3,1fr)">
+      
       <div class="info-item"><div class="il">Cenários</div><div class="iv">5 cenários</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Situações reais do dia a dia do Bling.</div></div>
-      <div class="info-item"><div class="il">Prazo</div><div class="iv">10 de Outubro</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Seu desafio deverá ser entregue até dia 10 de Outubro às 23:59.</div></div>
+      <div class="info-item"><div class="il">Prazo</div><div class="iv">05 de Outubro</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Seu desafio deverá ser entregue até dia 05 de Outubro às 23:59.</div></div>
       <div class="info-item"><div class="il">Respostas</div><div class="iv">Ao enviar</div><div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.5">Só são salvas após o envio final.</div></div>
     </div>
     <button class="btn-p" onclick="show('s-email')">Começar</button>
@@ -266,7 +266,7 @@ const SC=[
          'D) Time de L2 pedindo orientação sobre incidentes que estão em aberto.',
          'E) Gestão solicita levantamento dos principais problemas que ocorreram na semana passada para apresentação para a diretoria.'],
    qs:['Em que ordem você trata cada uma dessas demandas? Justifique seu raciocínio.',
-       'O que você faz com cada uma das demandas que não consegue atender imediatamente?',
+       'O que você faz com cada uma das demandas?',
        'Como você se comunica com quem está esperando enquanto você trata as prioridades?']},
   {tag:'Cenário 04',title:'Processos e melhoria contínua',
    ctx:'Nos últimos 2 meses o time de L2 escalou mais de 15 chamados sobre o mesmo tema — erro de configuração de uma integração — sendo que a maioria poderia ter sido resolvida no próprio L2.',
@@ -390,8 +390,7 @@ function finish(timeout=false,isRetry=false){
   const tStr=hu>0?`${hu}h ${mu}min`:`${mu} min`;
   let h=`<div class="sr"><span>Candidato</span><span>${uName}</span></div>
     <div class="sr"><span>E-mail</span><span>${uEmail}</span></div>
-    <div class="sr"><span>Tempo utilizado</span><span>${tStr}</span></div>
-    ${isRetry?'<div class="sr"><span>Observação</span><span style="color:#F6C343">⚠️ Segunda submissão</span></div>':''}`;
+    <div class="sr"><span>Tempo utilizado</span><span>${tStr}</span></div>`;
   SC.forEach((s,i)=>{
     const has=ans[i].some(v=>v.trim());
     h+=`<div class="sr"><span>${s.tag}</span><span style="color:${has?'var(--green)':'var(--t2)'}">${has?'✓ Respondido':'— Não respondido'}</span></div>`;
