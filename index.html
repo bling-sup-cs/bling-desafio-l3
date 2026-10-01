@@ -224,20 +224,15 @@ function clearSession(){
 window.addEventListener('load', () => {
   const session = loadSession();
   if(!session || !session.name || !session.email || !session.startedAt) return;
-  if(!session.startedAt){ clearSession(); return; }
   // Restaura sessão
   uName = session.name;
   uEmail = session.email;
   startedAt = session.startedAt;
   ans = session.answers || SC.map(s=>s.qs.map(()=>''));
-  secs = remaining;
   cur = session.cur || 0;
-
   show('s-challenge');
   render(cur);
   document.querySelectorAll('.sbtn').forEach((b,idx)=>b.classList.toggle('active',idx===cur));
-  tick(); // atualiza display imediatamente
-
 });
 const STORAGE_KEY='bling_desafio_v1';
 const SC=[
